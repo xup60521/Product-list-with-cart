@@ -1,5 +1,5 @@
 {
-  "name": "pnpm-vite-ts-react-tailwindcss-gh-pages-template",
+  "name": "product-list-with-cart",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,8 +11,11 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.2",
+    "framer-motion": "^11.11.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zustand": "5.0.0-rc.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.8",
