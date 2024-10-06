@@ -18,7 +18,7 @@ export default function App() {
         <AnimatePresence>
             <main
                 data-testid="test-app"
-                className="w-full min-h-screen bg-c_Rose_50 flex md:flex-row flex-col gap-6 md:py-12 py-6 md:px-24 px-4 font-red_hat_text z-10"
+                className="w-full min-h-screen bg-c_Rose_50 flex md:justify-center md:flex-row flex-col gap-6 md:py-12 py-6 md:px-24 px-4 font-red_hat_text z-10"
             >
                 <div className="flex flex-col gap-6">
                     <h1 className="font-bold text-[2.25rem]">Desserts</h1>
