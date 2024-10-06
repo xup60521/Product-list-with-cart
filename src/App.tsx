@@ -7,21 +7,18 @@ import RemoveItemIcon from "/images/icon-remove-item.svg";
 import { useEffect, useRef, useState } from "react";
 import autoAnimate from "@formkit/auto-animate";
 import { AnimatePresence, motion } from "framer-motion";
-import OrderConfirmedIcon from "/images/icon-order-confirmed.svg";
-import EmptyCartIll from "/images/illustration-empty-cart.svg"
+
+import EmptyCartIll from "/images/illustration-empty-cart.svg";
+import Modal from "./components/Modal";
 
 export default function App() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { data: selectedData, reset } = useDataState();
-    const totalPrice = selectedData.reduce((acc, item) => {
-        acc += item.count * priceNameMap[item.name];
-        return acc;
-    }, 0);
+
     return (
         <AnimatePresence>
             <main
                 data-testid="test-app"
-                className="w-full min-h-screen bg-c_Rose_50 flex gap-6 py-12 px-24 font-red_hat_text z-10"
+                className="w-full min-h-screen bg-c_Rose_50 flex md:flex-row flex-col gap-6 md:py-12 py-6 md:px-24 px-4 font-red_hat_text z-10"
             >
                 <div className="flex flex-col gap-6">
                     <h1 className="font-bold text-[2.25rem]">Desserts</h1>
@@ -44,84 +41,7 @@ export default function App() {
                 ></motion.div>
             )}
             {isModalOpen && (
-                <motion.div
-                    onMouseDown={() => setIsModalOpen(false)}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    key={"desktop-modal"}
-                    className="fixed w-full min-h-screen flex items-center justify-center z-30 top-0 left-0 font-red_hat_text"
-                >
-                    <div
-                        onMouseDown={(e) => e.stopPropagation()}
-                        className="bg-white rounded-2xl flex flex-col w-[min(30rem,100vw)] p-8 gap-4"
-                    >
-                        <img
-                            src={OrderConfirmedIcon}
-                            alt="order confirm"
-                            className="size-10"
-                        />
-                        <div className="w-full flex flex-col">
-                            <h3 className="text-[2rem] font-black">
-                                Order Confirmed
-                            </h3>
-                            <span>We hope you enjoy your food!</span>
-                        </div>
-                        <div className="bg-c_Rose_50 flex flex-col p-3">
-                            {selectedData.map((item) => {
-                                const price = priceNameMap[item.name];
-                                const photoUrl = data.find(
-                                    (d) => d.name === item.name
-                                )?.image.thumbnail;
-                                return (
-                                    <div
-                                        key={`modal list cart items ${item.name}`}
-                                        className="flex justify-between items-center p-2"
-                                    >
-                                        <div className="flex items-center h-full gap-4">
-                                            <img
-                                                src={photoUrl}
-                                                alt={item.name + " thumbnail"}
-                                                className="size-10"
-                                            />
-                                            <div className="flex flex-col h-full gap-1">
-                                                <span className="font-semibold text-xs">
-                                                    {item.name}
-                                                </span>
-                                                <div className="flex gap-2">
-                                                    <span className="text-c_Red font-semibold text-xs">
-                                                        {item.count}x
-                                                    </span>
-                                                    <span className=" text-xs">
-                                                        @${price.toFixed(2)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <span className="font-semibold">
-                                            ${(item.count * price).toFixed(2)}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                            <div className="w-full flex items-center justify-between px-2 pt-4 pb-2">
-                                <span className="text-xs">Order Total</span>
-                                <span className="font-bold text-xl">
-                                    ${totalPrice.toFixed(2)}
-                                </span>
-                            </div>
-                        </div>
-                        <button
-                            onMouseDown={() => {
-                                setIsModalOpen(false);
-                                reset();
-                            }}
-                            className="bg-c_Red text-sm hover:brightness-75 transition text-white rounded-full py-3"
-                        >
-                            Start New Order
-                        </button>
-                    </div>
-                </motion.div>
+                <Modal setIsModalOpen={setIsModalOpen} key="modal" />
             )}
         </AnimatePresence>
     );
@@ -148,9 +68,9 @@ function Item(props: { item: Unpack<typeof data> }) {
             <img
                 src={item.image.mobile}
                 alt={item.name}
-                className="rounded-lg hidden md:hidden"
+                className="rounded-lg block md:hidden"
             />
-            <div className="w-full flex justify-center -translate-y-[50%]">
+            <div className="w-full flex justify-center -translate-y-[50%] -mb-2">
                 {selectedData?.count === 0 || !selectedData?.count ? (
                     <button
                         onMouseDown={() => increment(item.name)}
@@ -180,9 +100,13 @@ function Item(props: { item: Unpack<typeof data> }) {
                 )}
             </div>
             <div className="w-full flex flex-col">
-                <span className="text-c_Rose_500">{item.category}</span>
-                <span className="font-bold">{item.name}</span>
-                <span className="font-bold text-c_Red">
+                <span className="text-c_Rose_500 md:text-[1rem]">
+                    {item.category}
+                </span>
+                <span className="font-semibold text-c_Rose_900 md:text-[1rem]">
+                    {item.name}
+                </span>
+                <span className="font-semibold text-c_Red md:text-[1rem]">
                     ${item.price.toFixed(2)}
                 </span>
             </div>
@@ -207,7 +131,7 @@ function Cart({
     }, [cartDivRef]);
 
     return (
-        <div className="flex flex-col min-w-[24rem] bg-white h-fit rounded-lg py-6 px-6 gap-4">
+        <div className="flex flex-col md:min-w-[24rem] bg-white h-fit rounded-lg py-6 px-6 gap-4">
             <h2 className="text-c_Red text-2xl font-bold">
                 Your Cart ({selectedData.length})
             </h2>
@@ -284,7 +208,9 @@ function Cart({
             ) : (
                 <div className="w-full flex flex-col items-center py-4 gap-4">
                     <img src={EmptyCartIll} alt="empty cart illustration" />
-                    <span className="text-c_Rose_500 font-semibold text-sm">Your added items will appear here</span>
+                    <span className="text-c_Rose_500 font-semibold text-sm">
+                        Your added items will appear here
+                    </span>
                 </div>
             )}
         </div>
